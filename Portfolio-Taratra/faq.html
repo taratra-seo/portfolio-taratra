@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>FAQ – Collaboration avec Taratra ANDRIAMANAMIHANTA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="FAQ de Taratra ANDRIAMANAMIHANTA, spécialiste SEO local, expert WordPress / Elementor et rédacteur web SEO. Questions sur les tarifs, l'automatisation, la disponibilité et les modes de paiement." />
+  <link rel="stylesheet" href="styles/style.css" />
+<script>
+// VFS Asset Interceptor - Auto-injected by OSW Studio
+(function() {
+  const vfsBlobUrls = {"/data.json":"blob:https://otst-osw-studio.hf.space/c48aafcf-43f9-4e27-a135-90380ee2d9f4","/assets/bureau-taratra.jpg":"blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44","/assets/qr-linkedin-taratra.png":"blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b","/scripts/main.js":"blob:https://otst-osw-studio.hf.space/f798ee11-e58c-432c-8797-a46af5fb1543","/index.html":"blob:https://otst-osw-studio.hf.space/f18c23ac-35f3-4af3-a404-df539c868b32","/seo-local.html":"blob:https://otst-osw-studio.hf.space/207ff5a8-44dc-48b8-bfd5-548283863bb6","/services.html":"blob:https://otst-osw-studio.hf.space/c6b19c9b-957e-4be7-8f38-a8f0d3a3c72e"};
+  
+  // Helper function to resolve VFS paths to blob URLs
+  function resolveVfsUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/assets/') && vfsBlobUrls[url]) {
+      return vfsBlobUrls[url];
+    }
+    return url;
+  }
+  
+  // Intercept Image src setter to handle ALL image loading
+  const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    get: function() {
+      return originalSrcDescriptor.get.call(this);
+    },
+    set: function(value) {
+      const resolvedUrl = resolveVfsUrl(value);
+      return originalSrcDescriptor.set.call(this, resolvedUrl);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept setAttribute for src attributes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && this instanceof HTMLImageElement) {
+      value = resolveVfsUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept innerHTML to catch template-generated images
+  const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      return originalInnerHTMLDescriptor.get.call(this);
+    },
+    set: function(value) {
+      if (typeof value === 'string' && value.includes('/assets/')) {
+        // Replace asset URLs in the HTML string before setting
+        const srcRegex = new RegExp('src=["\']([^"\']*/assets/[^"\']*)["\']', 'g');
+        value = value.replace(srcRegex, function(match, url) {
+          const resolvedUrl = resolveVfsUrl(url);
+          if (resolvedUrl !== url) {
+            return match.replace(url, resolvedUrl);
+          }
+          return match;
+        });
+      }
+      return originalInnerHTMLDescriptor.set.call(this, value);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept Image constructor
+  const OriginalImage = window.Image;
+  window.Image = function(...args) {
+    const img = new OriginalImage(...args);
+    // Override src setter for this instance too
+    const descriptor = Object.getOwnPropertyDescriptor(img, 'src') || 
+                      Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (descriptor) {
+      Object.defineProperty(img, 'src', {
+        get: descriptor.get,
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return img;
+  };
+  // Preserve original Image properties
+  Object.setPrototypeOf(window.Image, OriginalImage);
+  window.Image.prototype = OriginalImage.prototype;
+  
+  // Intercept createElement for img elements
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName, options) {
+    const element = originalCreateElement.call(this, tagName, options);
+    if (tagName.toLowerCase() === 'img') {
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      Object.defineProperty(element, 'src', {
+        get: function() {
+          return originalSrcDescriptor.get.call(this);
+        },
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return element;
+  };
+  
+  // Intercept fetch requests to VFS assets
+  const originalFetch = window.fetch;
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : input.url;
+    const resolvedUrl = resolveVfsUrl(url);
+    
+    if (resolvedUrl !== url) {
+      return originalFetch(resolvedUrl, init);
+    }
+    
+    return originalFetch(input, init);
+  };
+  
+  // Intercept XMLHttpRequest for older code
+  const OriginalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = function() {
+    const xhr = new OriginalXHR();
+    const originalOpen = xhr.open;
+    
+    xhr.open = function(method, url, ...args) {
+      const resolvedUrl = resolveVfsUrl(url);
+      return originalOpen.call(this, method, resolvedUrl, ...args);
+    };
+    
+    return xhr;
+  };
+  
+  // Process any existing images in the DOM when ready
+  function processExistingImages() {
+    const images = document.querySelectorAll('img[src*="/assets/"]');
+    images.forEach(img => {
+      const currentSrc = img.src;
+      const resolvedSrc = resolveVfsUrl(currentSrc);
+      if (resolvedSrc !== currentSrc) {
+        img.src = resolvedSrc;
+      }
+    });
+  }
+  
+  // Use MutationObserver to catch dynamically added images
+  function setupMutationObserver() {
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              if (node.tagName === 'IMG' && node.src && node.src.includes('/assets/')) {
+                const resolvedSrc = resolveVfsUrl(node.src);
+                if (resolvedSrc !== node.src) {
+                  node.src = resolvedSrc;
+                }
+              }
+              // Also check children
+              const childImages = node.querySelectorAll && node.querySelectorAll('img[src*="/assets/"]');
+              if (childImages) {
+                childImages.forEach(img => {
+                  const resolvedSrc = resolveVfsUrl(img.src);
+                  if (resolvedSrc !== img.src) {
+                    img.src = resolvedSrc;
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+  
+  // Setup everything when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      processExistingImages();
+      setupMutationObserver();
+    });
+  } else {
+    processExistingImages();
+    setupMutationObserver();
+  }
+})();
+</script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar">
+      <div class="logo">
+        <span class="logo-mark">T.S</span>
+        <span class="logo-text">TaraAI<span class="accent">·SEO</span></span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="seo-local.html">SEO Local</a></li>
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="process.html">Process</a></li>
+        <li><a href="apropos.html">À propos</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="environnement.html">Environnement</a></li>
+        <li><a href="index.html#contact" class="btn-nav">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Intro FAQ -->
+    <section class="section section-compact">
+      <div class="section-header">
+        <p class="hero-eyebrow">Questions fréquentes</p>
+        <h1>Comment je travaille avec mes clients&nbsp;?</h1>
+        <p>
+          Cette FAQ reprend les points importants&nbsp;: tarifs, automatisation, disponibilités,
+          modes de paiement, outils utilisés, etc.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section section-alt">
+      <div class="section-header">
+        <h2>Questions fréquentes</h2>
+        <p>
+          Quelques réponses rapides pour vous aider à voir comment je peux m’intégrer à votre équipe ou à vos projets existants.
+        </p>
+      </div>
+
+      <div class="faq-grid">
+        <details class="faq-item">
+          <summary>Peut-on commencer par une petite mission test&nbsp;?</summary>
+          <p>
+            Oui. Un test rémunéré ou une courte période d’essai permet de valider le workflow, le niveau de détail attendu et la façon de communiquer.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Travaillez-vous sur des sites déjà en place&nbsp;?</summary>
+          <p>
+            Oui, je peux reprendre un site WordPress existant, nettoyer la structure des pages, améliorer la mise en forme sous Elementor et retravailler les contenus pour plus de clarté et de cohérence.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Comment utilisez-vous l’IA dans la rédaction&nbsp;?</summary>
+          <p>
+            J’utilise l’IA pour générer une base de texte, puis j’interviens pour corriger, réécrire, simplifier et adapter le ton.
+            L’objectif est d’obtenir un contenu naturel, sans tournures “robotisées” ni répétitions inutiles.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Pouvez-vous suivre nos vidéos de formation et nos SOP&nbsp;?</summary>
+          <p>
+            Oui. Je peux m’adapter à vos process internes, suivre des vidéos explicatives et appliquer vos méthodes pour garder une vraie cohérence dans l’ensemble de vos projets.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>À quel niveau intervenez-vous sur le SEO&nbsp;?</summary>
+          <p>
+            J’interviens surtout sur le <strong>SEO on-page</strong> et le <strong>SEO local</strong> : structure des pages, balises Hn, cohérence sémantique, maillage interne simple et contenus optimisés pour les recherches locales.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Comment se passe la communication au quotidien&nbsp;?</summary>
+          <p>
+            Je privilégie une communication simple et directe&nbsp;: récap par message, validation des priorités,
+            partage de captures si nécessaire et point régulier sur l’avancement.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Comment fonctionnent vos tarifs&nbsp;?</summary>
+          <p>
+            Je peux commencer exactement sur la base proposée dans l’offre initiale&nbsp;:
+            <strong>5&nbsp;€ de l’heure pour 10&nbsp;heures par mois</strong>.
+            Le tarif reste un facteur important, mais ce n’est pas le critère principal pour moi&nbsp;:
+            je préfère construire une collaboration stable, avec un travail propre, des pages prêtes à publier
+            et un vrai suivi dans le temps.
+          </p>
+          <p>
+            Si le périmètre évolue (plus d’heures, nouvelles responsabilités, suivi plus régulier),
+            nous pouvons faire évoluer ensemble les conditions de travail&nbsp;:
+            bloc d’heures, forfaits ou autre organisation qui reste logique pour vous comme pour moi.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Quels sont vos modes de paiement&nbsp;?</summary>
+          <p>
+            J'utilise en priorité le <strong>Mobile Money (Mvola)</strong>.
+            Pour les clients à l’étranger, je recommande fortement <strong>Remitly</strong>, qui est plus
+            intéressant que les virements bancaires classiques.
+          </p>
+          <p>
+            Les banques traditionnelles appliquent souvent des <strong>frais très élevés</strong> et des taux peu favorables&nbsp;:
+            au final, le coût total peut facilement représenter l’équivalent de <strong>15 à 20&nbsp;% du montant envoyé</strong>,
+            avec en plus un <strong>délai de traitement long</strong> avant que l’argent n’arrive réellement.
+          </p>
+          <p>
+            Avec <strong>Remitly</strong>, le fonctionnement est simple&nbsp;:
+          </p>
+          <ul>
+            <li>le client crée un compte Remitly en quelques minutes&nbsp;;</li>
+            <li>il paie par carte ou par virement selon son pays&nbsp;;</li>
+            <li>je reçois les fonds directement en <strong>Mobile Money (Mvola)</strong>&nbsp;;</li>
+            <li>les frais sont clairement indiqués et le délai est en général beaucoup plus rapide.</li>
+          </ul>
+          <p>
+            C’est plus <strong>transparent</strong>, plus <strong>fiable</strong> et plus <strong>économique</strong>
+            pour tout le monde qu’un transfert bancaire international classique.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Est-ce que vous automatisez certaines tâches sur WordPress&nbsp;?</summary>
+          <p>
+            Oui, dès que c’est pertinent et validé avec vous. J’utilise des
+            <strong>scripts Python en local</strong> pour automatiser certaines tâches répétitives&nbsp;:
+            par exemple, découper et convertir des images générées par des IA (comme Nano Banana, Imagen ou autres)
+            avant de les intégrer dans WordPress.
+          </p>
+          <p>
+            Côté WordPress, je peux installer et configurer des extensions dédiées (par exemple des plugins de
+            <strong>snippets</strong> ou des outils de type <strong>WPBulky</strong>) pour gérer plus facilement
+            les métadonnées, les slugs ou des mises à jour en masse. Cela permet de vérifier en une seule vue
+            l’ensemble des pages, de contrôler les maillages internes et de repérer rapidement ce qui doit être ajusté.
+          </p>
+          <p>
+            L’objectif reste de <strong>gagner du temps sur les tâches répétitives</strong> tout en gardant un
+            contrôle humain&nbsp;: je vérifie systématiquement le résultat des automatisations et je respecte vos
+            consignes éditoriales et techniques.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Que se passe-t-il si le volume de travail augmente&nbsp;?</summary>
+          <p>
+            Si le volume de pages ou d’articles à traiter augmente, je peux adapter ma façon de travailler&nbsp;:
+            mise en place de modèles réutilisables dans Elementor, automatisation d’une partie des tâches répétitives
+            et organisation du travail par lots (par exemple&nbsp;: structure le matin, contenus l’après-midi).
+            Le but est de garder la même exigence de qualité tout en respectant les délais,
+            sans sacrifier la relecture ni le sens du détail.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Que faites-vous quand vous ne savez pas encore faire quelque chose&nbsp;?</summary>
+          <p>
+            Je préfère être transparent&nbsp;: il peut arriver que je ne maîtrise pas encore un point précis au début.
+            Dans ce cas, je commence par le dire clairement, puis je me forme rapidement à partir des
+            <strong>vidéos de formation</strong>, de vos <strong>documents internes</strong> et des outils d’IA
+            comme <strong>ChatGPT</strong> ou <strong>Gemini</strong>.
+          </p>
+          <p>
+            Mon objectif est de devenir <strong>autonome</strong> le plus vite possible sur la tâche, sans vous surcharger.
+            Je prends des notes, je documente ce que j’apprends et je reviens vers vous uniquement si j’ai besoin d’une
+            précision ou d’une validation. Cela me permet de progresser en continu tout en respectant vos process.
+          </p>
+        </details>
+
+        <details class="faq-item">
+          <summary>Pouvez-vous travailler le soir ou le week-end&nbsp;?</summary>
+          <p>
+            Ma <strong>disponibilité principale pour un nouveau client</strong> se situe entre
+            <strong>9&nbsp;h et 11&nbsp;h, tous les jours</strong>.
+          </p>
+          <p>
+            Cependant, en cas de besoin particulier ou de période plus chargée, je peux ponctuellement adapter mon organisation
+            et traiter certaines tâches <strong>le soir ou le week-end</strong>, tant que cela reste
+            raisonnable et planifié à l’avance.
+          </p>
+          <p>
+            L’objectif est d’être clair dès le départ sur les créneaux&nbsp;: vous savez quand je suis
+            disponible pour vous, et nous pouvons nous organiser sereinement sur la durée.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Taratra ANDRIAMANAMIHANTA — SEO local, WordPress / Elementor, rédaction web SEO.</p>
+  </footer>
+
+  <script>
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>
+

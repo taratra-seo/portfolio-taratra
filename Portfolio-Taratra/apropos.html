@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+<title>À propos – Taratra ANDRIAMANAMIHANTA, SEO local & WordPress</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio de Taratra ANDRIAMANAMIHANTA, spécialiste SEO local, expert WordPress / Elementor et rédacteur web SEO. Création de sites, optimisation locale et contenus orientés conversion." />
+  <link rel="stylesheet" href="styles/style.css" />
+<script>
+// VFS Asset Interceptor - Auto-injected by OSW Studio
+(function() {
+  const vfsBlobUrls = {"/data.json":"blob:https://otst-osw-studio.hf.space/c48aafcf-43f9-4e27-a135-90380ee2d9f4","/assets/bureau-taratra.jpg":"blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44","/assets/qr-linkedin-taratra.png":"blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b","/scripts/main.js":"blob:https://otst-osw-studio.hf.space/f798ee11-e58c-432c-8797-a46af5fb1543","/index.html":"blob:https://otst-osw-studio.hf.space/f18c23ac-35f3-4af3-a404-df539c868b32","/seo-local.html":"blob:https://otst-osw-studio.hf.space/207ff5a8-44dc-48b8-bfd5-548283863bb6","/services.html":"blob:https://otst-osw-studio.hf.space/c6b19c9b-957e-4be7-8f38-a8f0d3a3c72e","/faq.html":"blob:https://otst-osw-studio.hf.space/f3b6b511-f81c-4821-9022-304ffb4f3cee"};
+  
+  // Helper function to resolve VFS paths to blob URLs
+  function resolveVfsUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/assets/') && vfsBlobUrls[url]) {
+      return vfsBlobUrls[url];
+    }
+    return url;
+  }
+  
+  // Intercept Image src setter to handle ALL image loading
+  const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    get: function() {
+      return originalSrcDescriptor.get.call(this);
+    },
+    set: function(value) {
+      const resolvedUrl = resolveVfsUrl(value);
+      return originalSrcDescriptor.set.call(this, resolvedUrl);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept setAttribute for src attributes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && this instanceof HTMLImageElement) {
+      value = resolveVfsUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept innerHTML to catch template-generated images
+  const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      return originalInnerHTMLDescriptor.get.call(this);
+    },
+    set: function(value) {
+      if (typeof value === 'string' && value.includes('/assets/')) {
+        // Replace asset URLs in the HTML string before setting
+        const srcRegex = new RegExp('src=["\']([^"\']*/assets/[^"\']*)["\']', 'g');
+        value = value.replace(srcRegex, function(match, url) {
+          const resolvedUrl = resolveVfsUrl(url);
+          if (resolvedUrl !== url) {
+            return match.replace(url, resolvedUrl);
+          }
+          return match;
+        });
+      }
+      return originalInnerHTMLDescriptor.set.call(this, value);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept Image constructor
+  const OriginalImage = window.Image;
+  window.Image = function(...args) {
+    const img = new OriginalImage(...args);
+    // Override src setter for this instance too
+    const descriptor = Object.getOwnPropertyDescriptor(img, 'src') || 
+                      Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (descriptor) {
+      Object.defineProperty(img, 'src', {
+        get: descriptor.get,
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return img;
+  };
+  // Preserve original Image properties
+  Object.setPrototypeOf(window.Image, OriginalImage);
+  window.Image.prototype = OriginalImage.prototype;
+  
+  // Intercept createElement for img elements
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName, options) {
+    const element = originalCreateElement.call(this, tagName, options);
+    if (tagName.toLowerCase() === 'img') {
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      Object.defineProperty(element, 'src', {
+        get: function() {
+          return originalSrcDescriptor.get.call(this);
+        },
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return element;
+  };
+  
+  // Intercept fetch requests to VFS assets
+  const originalFetch = window.fetch;
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : input.url;
+    const resolvedUrl = resolveVfsUrl(url);
+    
+    if (resolvedUrl !== url) {
+      return originalFetch(resolvedUrl, init);
+    }
+    
+    return originalFetch(input, init);
+  };
+  
+  // Intercept XMLHttpRequest for older code
+  const OriginalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = function() {
+    const xhr = new OriginalXHR();
+    const originalOpen = xhr.open;
+    
+    xhr.open = function(method, url, ...args) {
+      const resolvedUrl = resolveVfsUrl(url);
+      return originalOpen.call(this, method, resolvedUrl, ...args);
+    };
+    
+    return xhr;
+  };
+  
+  // Process any existing images in the DOM when ready
+  function processExistingImages() {
+    const images = document.querySelectorAll('img[src*="/assets/"]');
+    images.forEach(img => {
+      const currentSrc = img.src;
+      const resolvedSrc = resolveVfsUrl(currentSrc);
+      if (resolvedSrc !== currentSrc) {
+        img.src = resolvedSrc;
+      }
+    });
+  }
+  
+  // Use MutationObserver to catch dynamically added images
+  function setupMutationObserver() {
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              if (node.tagName === 'IMG' && node.src && node.src.includes('/assets/')) {
+                const resolvedSrc = resolveVfsUrl(node.src);
+                if (resolvedSrc !== node.src) {
+                  node.src = resolvedSrc;
+                }
+              }
+              // Also check children
+              const childImages = node.querySelectorAll && node.querySelectorAll('img[src*="/assets/"]');
+              if (childImages) {
+                childImages.forEach(img => {
+                  const resolvedSrc = resolveVfsUrl(img.src);
+                  if (resolvedSrc !== img.src) {
+                    img.src = resolvedSrc;
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+  
+  // Setup everything when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      processExistingImages();
+      setupMutationObserver();
+    });
+  } else {
+    processExistingImages();
+    setupMutationObserver();
+  }
+})();
+</script>
+</head>
+<body>
+  <header class="site-header">
+   <nav class="navbar">
+  <div class="logo">
+    <span class="logo-mark">T.S</span>
+    <span class="logo-text">TaraAI<span class="accent">·SEO</span></span>
+  </div>
+ <ul class="nav-links">
+  <li><a href="index.html">Accueil</a></li>
+  <li><a href="services.html">Services</a></li>
+  <li><a href="services.html#seo-local">SEO Local</a></li>
+  <li><a href="projets.html">Projets</a></li>
+  <li><a href="services.html#process">Process</a></li>
+  <li><a href="apropos.html">À propos</a></li>
+  <li><a href="faq.html">FAQ</a></li>
+  <li><a href="environnement.html">Environnement</a></li>
+  <li><a href="index.html#contact" class="btn-nav">Contact</a></li>
+</ul>
+</nav>
+  </header>
+<main>
+  <!-- INTRO À PROPOS -->
+  <section class="section section-compact">
+    <div class="section-header">
+      <p class="hero-eyebrow">À propos</p>
+      <h1>Taratra ANDRIAMANAMIHANTA – SEO local, WordPress & rédaction web</h1>
+      <p>
+        Je suis <strong>spécialiste SEO local</strong>, <strong>expert WordPress / Elementor</strong> et
+        <strong>rédacteur web SEO</strong>. Mon objectif&nbsp;: transformer vos idées en pages claires,
+        lisibles et prêtes à être publiées, sans vous noyer dans la technique.
+      </p>
+    </div>
+  </section>
+
+  <!-- QUI JE SUIS / PARCOURS -->
+  <section id="about" class="section section-alt">
+    <div class="about-grid">
+      <article class="card">
+        <h2>Qui suis-je ?</h2>
+        <p>
+          Je travaille sur WordPress depuis plusieurs années, avec un focus sur les <strong>sites vitrines</strong>,
+          les <strong>pages locales</strong> et les <strong>landing pages orientées conversion</strong>.
+        </p>
+        <p>
+          J’aime particulièrement le travail de <strong>structure</strong>&nbsp;:
+          organiser les blocs, clarifier le parcours utilisateur, aligner le texte avec l’intention de la page.
+        </p>
+        <p>
+          J’utilise au quotidien <strong>Elementor</strong>, des outils d’IA (ChatGPT, Gemini, etc.) et des
+          scripts personnalisés pour gagner du temps sur les tâches répétitives, tout en gardant une vraie relecture humaine.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>Ce que je fais pour mes clients</h2>
+        <ul class="about-list">
+          <li>Création et refonte de pages sous <strong>WordPress / Elementor</strong>.</li>
+          <li>Structuration de <strong>pages locales</strong> (villes, zones d’intervention) pour le SEO local.</li>
+          <li>Rédaction et réécriture de contenus avec <strong>IA + relecture manuelle</strong>.</li>
+          <li>Mise en brouillon, planification ou publication des pages.</li>
+          <li>Vérification de la lisibilité, cohérence des titres, maillage interne de base.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- EXPÉRIENCE CÔTÉ CLIENT -->
+  <section class="section">
+    <div class="section-header">
+      <h2>L’expérience de travail avec moi</h2>
+      <p>
+        Au-delà des outils, j’essaie d’offrir une expérience de collaboration
+        <strong>simple, structurée et fiable</strong>.
+      </p>
+    </div>
+
+    <div class="cards-grid">
+      <article class="card">
+        <h3>Avant de commencer</h3>
+        <ul class="about-list">
+          <li>Nous clarifions le périmètre&nbsp;: type de pages, volume, objectifs.</li>
+          <li>Je prends connaissance de vos <strong>maquettes, vidéos de formation ou process internes</strong>.</li>
+          <li>Nous validons ensemble un rythme&nbsp;: <strong>environ 10&nbsp;h / mois</strong> pour démarrer.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Pendant la mission</h3>
+        <ul class="about-list">
+          <li>Travail principalement entre <strong>9&nbsp;h et 11&nbsp;h</strong> (heures dédiées à vos tâches).</li>
+          <li>Utilisation d’IA et d’<strong>automatisations ciblées</strong> pour gagner du temps sur les tâches répétitives.</li>
+          <li>Messages réguliers pour vous tenir informé des pages créées, planifiées ou publiées.</li>
+        </ul>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- CV & LINKEDIN -->
+  <section class="section section-alt">
+    <div class="about-grid">
+      <article class="card resume-card">
+        <h2>Mon CV détaillé</h2>
+        <p>
+          Vous pouvez consulter mon parcours complet, mes expériences, mes compétences techniques et mes
+          projets principaux dans mon CV au format PDF.
+        </p>
+      <a href="https://drive.google.com/file/d/1EayvL7Nlp5GNskFljMqF5o2GTJABOyO6/view?usp=sharing" class="btn btn-primary" target="_blank" rel="noopener">
+  Voir mon CV complet (PDF)
+</a>
+
+      </article>
+
+      <article class="card qr-card">
+        <h2>Me retrouver sur LinkedIn</h2>
+        <p>
+          Pour en savoir plus sur mon profil, mon parcours et mes activités, vous pouvez me retrouver sur LinkedIn.
+          Il vous suffit de scanner le QR code ci-dessous ou de cliquer sur le lien.
+        </p>
+        <div class="qr-wrapper">
+          <img src="blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b" alt="QR code LinkedIn de Taratra ANDRIAMANAMIHANTA" />
+        </div>
+        <a href="https://www.linkedin.com/in/taratra-andriamanamihanta/" target="_blank" rel="noopener"
+     class="btn btn-primary qr-link">
+    Ouvrir mon profil LinkedIn
+  </a>
+
+      </article>
+    </div>
+  </section>
+</main>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section contact-section">
+    <div class="section-header">
+      <h2>Travaillons ensemble</h2>
+      <p>
+        Vous cherchez un <strong>spécialiste SEO local</strong>, un <strong>expert WordPress / Elementor</strong> et un <strong>rédacteur web SEO</strong>
+        capable de suivre vos process et de livrer des pages prêtes à publier&nbsp;? Décrivez votre besoin en quelques lignes.
+      </p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form">
+        <label>
+          Nom complet
+          <input type="text" name="name" placeholder="Votre nom" />
+        </label>
+        <label>
+          Adresse e-mail
+          <input type="email" name="email" placeholder="vous@example.com" />
+        </label>
+        <label>
+          Type de projet
+          <input type="text" name="project" placeholder="Site vitrine, pages locales, landing page..." />
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="5" placeholder="Expliquez votre besoin, vos objectifs, vos délais..."></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+      </form>
+              
+  </section>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Taratra ANDRIAMANAMIHANTA — SEO local, WordPress / Elementor, rédaction web SEO.</p>
+  </footer>
+
+  <script>
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>

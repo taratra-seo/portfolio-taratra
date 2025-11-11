@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taratra ANDRIAMANAMIHANTA – Spécialiste SEO local & Expert WordPress</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio de Taratra ANDRIAMANAMIHANTA, spécialiste SEO local, expert WordPress / Elementor et rédacteur web SEO. Création de sites, optimisation locale et contenus orientés conversion." />
+  <link rel="stylesheet" href="styles/style.css" />
+<script>
+// VFS Asset Interceptor - Auto-injected by OSW Studio
+(function() {
+  const vfsBlobUrls = {"/data.json":"blob:https://otst-osw-studio.hf.space/c48aafcf-43f9-4e27-a135-90380ee2d9f4","/assets/bureau-taratra.jpg":"blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44","/assets/qr-linkedin-taratra.png":"blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b","/scripts/main.js":"blob:https://otst-osw-studio.hf.space/f798ee11-e58c-432c-8797-a46af5fb1543"};
+  
+  // Helper function to resolve VFS paths to blob URLs
+  function resolveVfsUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/assets/') && vfsBlobUrls[url]) {
+      return vfsBlobUrls[url];
+    }
+    return url;
+  }
+  
+  // Intercept Image src setter to handle ALL image loading
+  const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    get: function() {
+      return originalSrcDescriptor.get.call(this);
+    },
+    set: function(value) {
+      const resolvedUrl = resolveVfsUrl(value);
+      return originalSrcDescriptor.set.call(this, resolvedUrl);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept setAttribute for src attributes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && this instanceof HTMLImageElement) {
+      value = resolveVfsUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept innerHTML to catch template-generated images
+  const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      return originalInnerHTMLDescriptor.get.call(this);
+    },
+    set: function(value) {
+      if (typeof value === 'string' && value.includes('/assets/')) {
+        // Replace asset URLs in the HTML string before setting
+        const srcRegex = new RegExp('src=["\']([^"\']*/assets/[^"\']*)["\']', 'g');
+        value = value.replace(srcRegex, function(match, url) {
+          const resolvedUrl = resolveVfsUrl(url);
+          if (resolvedUrl !== url) {
+            return match.replace(url, resolvedUrl);
+          }
+          return match;
+        });
+      }
+      return originalInnerHTMLDescriptor.set.call(this, value);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept Image constructor
+  const OriginalImage = window.Image;
+  window.Image = function(...args) {
+    const img = new OriginalImage(...args);
+    // Override src setter for this instance too
+    const descriptor = Object.getOwnPropertyDescriptor(img, 'src') || 
+                      Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (descriptor) {
+      Object.defineProperty(img, 'src', {
+        get: descriptor.get,
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return img;
+  };
+  // Preserve original Image properties
+  Object.setPrototypeOf(window.Image, OriginalImage);
+  window.Image.prototype = OriginalImage.prototype;
+  
+  // Intercept createElement for img elements
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName, options) {
+    const element = originalCreateElement.call(this, tagName, options);
+    if (tagName.toLowerCase() === 'img') {
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      Object.defineProperty(element, 'src', {
+        get: function() {
+          return originalSrcDescriptor.get.call(this);
+        },
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return element;
+  };
+  
+  // Intercept fetch requests to VFS assets
+  const originalFetch = window.fetch;
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : input.url;
+    const resolvedUrl = resolveVfsUrl(url);
+    
+    if (resolvedUrl !== url) {
+      return originalFetch(resolvedUrl, init);
+    }
+    
+    return originalFetch(input, init);
+  };
+  
+  // Intercept XMLHttpRequest for older code
+  const OriginalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = function() {
+    const xhr = new OriginalXHR();
+    const originalOpen = xhr.open;
+    
+    xhr.open = function(method, url, ...args) {
+      const resolvedUrl = resolveVfsUrl(url);
+      return originalOpen.call(this, method, resolvedUrl, ...args);
+    };
+    
+    return xhr;
+  };
+  
+  // Process any existing images in the DOM when ready
+  function processExistingImages() {
+    const images = document.querySelectorAll('img[src*="/assets/"]');
+    images.forEach(img => {
+      const currentSrc = img.src;
+      const resolvedSrc = resolveVfsUrl(currentSrc);
+      if (resolvedSrc !== currentSrc) {
+        img.src = resolvedSrc;
+      }
+    });
+  }
+  
+  // Use MutationObserver to catch dynamically added images
+  function setupMutationObserver() {
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              if (node.tagName === 'IMG' && node.src && node.src.includes('/assets/')) {
+                const resolvedSrc = resolveVfsUrl(node.src);
+                if (resolvedSrc !== node.src) {
+                  node.src = resolvedSrc;
+                }
+              }
+              // Also check children
+              const childImages = node.querySelectorAll && node.querySelectorAll('img[src*="/assets/"]');
+              if (childImages) {
+                childImages.forEach(img => {
+                  const resolvedSrc = resolveVfsUrl(img.src);
+                  if (resolvedSrc !== img.src) {
+                    img.src = resolvedSrc;
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+  
+  // Setup everything when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      processExistingImages();
+      setupMutationObserver();
+    });
+  } else {
+    processExistingImages();
+    setupMutationObserver();
+  }
+})();
+</script>
+</head>
+<body>
+  <header class="site-header">
+   <nav class="navbar">
+  <div class="logo">
+    <span class="logo-mark">T.S</span>
+    <span class="logo-text">TaraAI<span class="accent">·SEO</span></span>
+  </div>
+<ul class="nav-links">
+  <li><a href="index.html">Accueil</a></li>
+  <li><a href="services.html">Services</a></li>
+  <li><a href="seo-local.html">SEO Local</a></li>
+  <li><a href="projets.html">Projets</a></li>
+  <li><a href="process.html">Process</a></li>
+  <li><a href="apropos.html">À propos</a></li>
+  <li><a href="faq.html">FAQ</a></li>
+  <li><a href="environnement.html">Environnement</a></li>
+  <li><a href="index.html#contact" class="btn-nav">Contact</a></li>
+</ul>
+</nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Taratra ANDRIAMANAMIHANTA</p>
+      <h1>Spécialiste <span class="accent">SEO local</span> & Expert <span class="accent">WordPress / Elementor</span></h1>
+      <p class="hero-subtitle">
+        Je suis <strong>Taratra ANDRIAMANAMIHANTA</strong>. J’aide les entreprises locales, freelances et agences
+        à créer des sites WordPress clairs, optimisés et prêts à convertir, avec une vraie
+        stratégie de <strong>SEO local</strong> et une <strong>rédaction web SEO</strong> assistée par IA.
+      </p>
+      <p class="hero-tagline">
+        Clarté, performance et sens du détail, du briefing jusqu’à la mise en ligne.
+      </p>
+      <div class="hero-actions">
+        <a href="#services" class="btn btn-primary">Voir mes services</a>
+        <a href="#projects" class="btn btn-secondary">Découvrir mes projets</a>
+      </div>
+      <div class="hero-highlights">
+        <div class="highlight-card">
+          <span class="highlight-label">Expertise</span>
+          <p>SEO local, WordPress / Elementor, rédaction web SEO.</p>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-label">Collaboration</span>
+          <p>Intégration dans vos process, vidéos de formation et outils internes.</p>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-label">Objectif</span>
+          <p>Des pages prêtes à publier, lisibles et orientées conversion.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="analytics-card">
+        <h2>Vue d’ensemble locale</h2>
+        <div class="analytics-row">
+          <div>
+            <p class="metric-label">Requêtes locales</p>
+            <p class="metric-value">+57%</p>
+          </div>
+          <div>
+            <p class="metric-label">Pages optimisées</p>
+            <p class="metric-value">+ 150</p>
+          </div>
+        </div>
+       <div class="chart-placeholder">
+  <p><strong>Ce que je suis pour mes clients :</strong></p>
+  <p>
+    Nombre de pages locales publiées, lisibilité des contenus et évolution des demandes de devis
+    après les optimisations on-page.
+  </p>
+</div>
+
+      <div class="map-card">
+        <h3>SEO local & pages locales</h3>
+<p>Optimisation des pages services et des pages locales (villes, quartiers, zones) avec des contenus structurés et lisibles.</p>
+
+        </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="section">
+    <div class="section-header">
+      <h2>Services pour booster votre présence en ligne</h2>
+      <p>
+        Je combine <strong>SEO local</strong>, <strong>WordPress / Elementor</strong> et <strong>rédaction web SEO</strong>
+        pour livrer des pages propres, lisibles et prêtes à convertir. Chaque bloc ci-dessous correspond à un besoin concret de vos clients ou de votre agence.
+      </p>
+    </div>
+    <div class="cards-grid">
+      <article class="card">
+  <h3>SEO local & pages locales</h3>
+  <ul>
+    <li>Analyse et structuration des pages services et des pages locales par ville ou zone.</li>
+    <li>Création de contenus optimisés pour les recherches locales, avec titres et sections clairs.</li>
+    <li>Organisation du maillage interne pour guider l’utilisateur vers la demande de devis ou le contact.</li>
+  </ul>
+</article>
+
+      <article class="card">
+        <h3>Sites WordPress & Elementor</h3>
+        <ul>
+          <li>Création ou refonte de sites vitrines sous <strong>WordPress / Elementor</strong>.</li>
+          <li>Mise en page propre : sections, colonnes, responsive, cohérence visuelle.</li>
+          <li>Optimisations de base : vitesse, lisibilité, hiérarchie des contenus.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Landing pages & conversions</h3>
+        <ul>
+          <li>Pages d’atterrissage focus sur une seule offre ou action.</li>
+          <li>Structures efficaces : hero, bénéfices, preuves, FAQ, call-to-action.</li>
+          <li>Textes orientés conversion, ajustés avec l’IA puis revus à la main.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Rédaction web SEO & IA</h3>
+        <ul>
+          <li>Génération de bases de contenus avec IA (articles, pages, FAQ).</li>
+          <li>Réécriture, enrichissement sémantique, adaptation au ton de la marque.</li>
+          <li>Vérification du français, cohérence, suppression du style “robotique”.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Support & intégration process</h3>
+        <ul>
+          <li>Travail à partir de vidéos de formation et SOP internes.</li>
+          <li>Communication simple et régulière (mail, WhatsApp, outils de gestion).</li>
+          <li>Interventions ponctuelles ou récurrentes, selon vos besoins.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- SEO LOCAL -->
+  <section id="seo-local" class="section section-alt">
+    <div class="section-header">
+      <h2>SEO local : être trouvé au bon endroit, au bon moment</h2>
+      <p>
+        Le <strong>SEO local</strong> permet à vos clients de vous trouver lorsqu’ils recherchent un service “près de chez eux”.
+J’aide à structurer des pages services et des pages locales par ville ou par zone d’intervention, avec un contenu cohérent, pour transformer des recherches en demandes de devis.
+      </p>
+    </div>
+
+    <div class="seo-grid">
+      <div class="seo-text">
+        <p>
+          Mon travail commence par un rapide état des lieux : pages existantes, fiches locales, cohérence des informations.
+          Ensuite, je propose une structure simple avec des pages par ville, des sections optimisées et des contenus clairs.
+        </p>
+        <p>
+          J’utilise l’IA comme accélérateur pour générer des bases de textes, puis je les réécris entièrement pour respecter le ton de l’entreprise, le niveau de langue et les consignes du client.
+          Le résultat : des contenus locaux lisibles, structurés et faciles à maintenir.
+        </p>
+        <p>
+          L’objectif n’est pas de promettre des miracles, mais de mettre en place les bons fondamentaux :
+          fiches complètes, pages bien hiérarchisées, maillage interne simple et appels à l’action visibles.
+        </p>
+      </div>
+      <div class="before-after">
+        <div class="ba-card">
+          <h3>Avant</h3>
+          <ul>
+            <li>Informations locales dispersées, aucune page dédiée par ville.</li>
+<li>Pages services très générales, sans précision sur les zones couvertes.</li>
+<li>Aucun appel à l’action clair pour la prise de contact.</li>
+
+          </ul>
+        </div>
+        <div class="ba-card ba-card-after">
+          <h3>Après</h3>
+          <ul>
+            <li>Informations cohérentes sur la fiche et le site.</li>
+            <li>Pages ville structurées avec sections lisibles.</li>
+            <li>Formulaires et boutons de contact visibles et répétés.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <div class="cards-grid projects-grid">
+  <article class="card project-card">
+    <img src="assets/projet-artisan.png" alt="Site vitrine pour artisan local" class="project-thumb" />
+    <h3>Site vitrine – artisan local</h3>
+    <p class="card-meta">Refonte complète sous WordPress / Elementor</p>
+    <p>
+      Refonte de la page d’accueil : hero clair, présentation, services, avis, zone d’intervention et contact.
+      Structuration avec Elementor, textes réécrits pour la lisibilité et base <strong>SEO local</strong> propre.
+    </p>
+    <p class="tags">WordPress · Elementor · Pages locales · Rédaction web SEO</p>
+  </article>
+
+  <article class="card project-card">
+    <img src="assets/projet-landing.png" alt="Landing page d’offre de service" class="project-thumb" />
+    <h3>Landing page – offre de service</h3>
+    <p class="card-meta">Page d’atterrissage orientée conversion</p>
+    <p>
+      Création d’une landing page avec structure simple : bénéfices, preuves, déroulé du service, FAQ et appel à l’action.
+      Contenus générés avec l’IA puis optimisés manuellement pour coller au ton du client.
+    </p>
+    <p class="tags">Landing page · Conversion · IA · UX</p>
+  </article>
+
+  <article class="card project-card">
+    <img src="assets/projet-blog.png" alt="Blog SEO pour activité de service" class="project-thumb" />
+    <h3>Blog SEO – services</h3>
+    <p class="card-meta">Série d’articles optimisés</p>
+    <p>
+      Mise en place d’un mini plan éditorial : choix des sujets, plans d’articles, rédaction avec IA puis réécriture.
+      Objectif : créer une base de contenus cohérents pour un meilleur positionnement sur les requêtes locales.
+    </p>
+    <p class="tags">Rédaction web SEO · IA · Stratégie éditoriale</p>
+  </article>
+</div>
+    <div class="cards-grid">
+      <article class="card">
+        <h3>Site vitrine – artisan local</h3>
+        <p class="card-meta">Refonte complète sous WordPress / Elementor</p>
+        <p>
+          Refonte de la page d’accueil avec sections claires : hero, présentation, services, avis, zone d’intervention et contact.
+          Textes retravaillés avec l’IA puis relus, hiérarchie Hn nettoyée, maillage interne simplifié.
+        </p>
+        <p class="tags">WordPress · Elementor · SEO local · Rédaction</p>
+      </article>
+      <article class="card">
+        <h3>Landing page – offre de service</h3>
+        <p class="card-meta">Page d’atterrissage orientée conversion</p>
+        <p>
+          Création d’une structure unique pour une offre précise : section bénéfices, preuves sociales, déroulé du service, FAQ et call-to-action final.
+          Les contenus ont été générés avec l’IA puis optimisés manuellement pour coller à la voix du client.
+        </p>
+        <p class="tags">Landing page · Conversion · IA · UX</p>
+      </article>
+      <article class="card">
+        <h3>Blog SEO – services</h3>
+        <p class="card-meta">Série d’articles optimisés</p>
+        <p>
+          Mise en place d’un calendrier éditorial simple, recherche de sujets, plans d’articles et rédaction web SEO.
+          Les textes ont été produits avec l’IA, retravaillés et optimisés pour les lecteurs humains et non uniquement pour les robots.
+        </p>
+        <p class="tags">Rédaction web · SEO · Stratégie éditoriale</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" class="section section-alt">
+    <div class="section-header">
+      <h2>Ma façon de travailler</h2>
+      <p>
+        Un process simple, transparent, qui s’intègre facilement à vos habitudes de travail. Je peux suivre vos procédures internes, vos vidéos
+        de formation et vos outils d’IA, tout en gardant un haut niveau de qualité sur le rendu final.
+      </p>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <span class="step-number">1</span>
+        <h3>Écoute & brief</h3>
+        <p>
+          Compréhension des objectifs, du type de site ou de page, des contraintes et des ressources disponibles (maquettes, contenus, vidéos).
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <h3>Structure & plan</h3>
+        <p>
+          Propositions de structures claires : sections, titres, organisation des blocs sous <strong>WordPress / Elementor</strong>.
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <h3>Production avec IA + relecture</h3>
+        <p>
+          Utilisation de l’IA pour générer une base, puis réécriture, vérification du français et ajustement au ton de la marque.
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-number">4</span>
+        <h3>Mise en page & tests</h3>
+        <p>
+          Intégration sous Elementor, vérification desktop / mobile, contrôle des Hn, liens, boutons et formulaires.
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-number">5</span>
+        <h3>Validation & suivi</h3>
+        <p>
+          Mise en brouillon, planification ou publication, puis ajustements en fonction des retours et des données.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="section-header">
+      <h2>À propos de Taratra</h2>
+      <p>
+        Je suis <strong>Taratra ANDRIAMANAMIHANTA</strong>, freelance spécialisé en <strong>SEO local</strong>, <strong>WordPress / Elementor</strong> et <strong>rédaction web SEO</strong>.
+        J’aime les pages structurées, la cohérence visuelle et les contenus qui respectent autant les lecteurs que les moteurs de recherche.
+      </p>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          Mon rôle est d’être le “bras droit” technique et éditorial : prendre vos consignes, vos vidéos de formation et vos maquettes,
+          puis livrer des pages prêtes à publier, propres et alignées avec vos objectifs.
+        </p>
+        <p>
+          Je suis à l’aise avec les outils d’IA, mais je reste très attentif au style, à la compréhension et au ton.
+          L’IA sert à gagner du temps ; la relecture humaine sert à garder la qualité.
+        </p>
+        <p>
+          Mes valeurs : clarté, fiabilité, sens du détail. Je préfère un travail propre et stable plutôt qu’un résultat rapide mais bancal.
+        </p>
+      </div>
+      <div class="about-values">
+        <div class="value-pill">Clarté</div>
+        <div class="value-pill">Fiabilité</div>
+        <div class="value-pill">Sens du détail</div>
+      </div>
+    </div>
+  </section>
+<!-- WORKSPACE -->
+<section id="workspace" class="section section-alt">
+  <div class="section-header">
+    <h2>Mon environnement de travail</h2>
+    <p>
+      Pour travailler sereinement sur vos projets, je m’appuie sur un environnement stable, équipé et pensé
+      pour le <strong>travail de précision</strong> : intégration WordPress / Elementor, rédaction web et ajustements fins.
+    </p>
+  </div>
+  <div class="workspace-grid">
+   <div class="workspace-text">
+  <p>
+    Pour travailler sereinement sur vos projets, je m’appuie sur un environnement stable, équipé et pensé
+    pour le <strong>travail de précision</strong> : intégration WordPress / Elementor, rédaction web et ajustements fins.
+  </p>
+  <p>
+    Mon poste principal est composé d’une <strong>unité centrale performante (16 Go de RAM, 1 To de stockage)</strong>
+    et de <strong>deux écrans</strong> : un écran <strong>ultra-wide 43’’</strong> et un écran <strong>27’’</strong>.
+    Cela me permet d’afficher en parallèle les maquettes, le back-office WordPress, les briefs et les outils d’IA.
+  </p>
+  <p>
+    Un <strong>onduleur (UPS)</strong> assure une continuité d’environ 30 minutes en cas de coupure,
+    et un <strong>PC portable de secours (16 Go de RAM également)</strong> me permet de reprendre rapidement si nécessaire.
+  </p>
+  <p>
+    Côté connexion, je dispose d’une <strong>connexion fibre Orange</strong> très stable
+    (aucun problème majeur depuis presque 8 ans). En cas de panne exceptionnelle,
+    j’ai accès à un <strong>coworking équipé Starlink</strong> à 5 minutes de chez moi pour basculer rapidement.
+  </p>
+  <p>
+    Mon quartier est relié au réseau électrique du <strong>palais présidentiel</strong> : il n’y a donc pas de délestage
+    et les coupures sont extrêmement rares (en général une grosse panne par an). J’utilise également
+    <strong>deux casques</strong> (un casque XCraft HP et un casque dédié aux appels) ainsi qu’une webcam pour les réunions.
+  </p>
+  <ul class="workspace-list">
+    <li>Double écran (43’’ ultra-wide + 27’’) pour comparer maquettes, front et back-office.</li>
+    <li>UC 16 Go / 1 To et PC portable 16 Go en secours pour limiter les interruptions.</li>
+    <li>Connexion fibre Orange stable, coworking Starlink en solution de repli.</li>
+    <li>Pas de délestage, environnement calme et matériel pensé pour le travail de précision.</li>
+  </ul>
+</div>
+
+    <div class="workspace-visual">
+      <img src="blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44" alt="Bureau de travail de Taratra, double écran" class="workspace-photo" />
+      <p class="workspace-caption">
+        Bureau de travail de Taratra ANDRIAMANAMIHANTA : setup pensé pour WordPress, Elementor, SEO et rédaction.
+      </p>
+    </div>
+  </div>
+</section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section contact-section">
+    <div class="section-header">
+      <h2>Travaillons ensemble</h2>
+      <p>
+        Vous cherchez un <strong>spécialiste SEO local</strong>, un <strong>expert WordPress / Elementor</strong> et un <strong>rédacteur web SEO</strong>
+        capable de suivre vos process et de livrer des pages prêtes à publier&nbsp;? Décrivez votre besoin en quelques lignes.
+      </p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form">
+        <label>
+          Nom complet
+          <input type="text" name="name" placeholder="Votre nom" />
+        </label>
+        <label>
+          Adresse e-mail
+          <input type="email" name="email" placeholder="vous@example.com" />
+        </label>
+        <label>
+          Type de projet
+          <input type="text" name="project" placeholder="Site vitrine, pages locales, landing page..." />
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="5" placeholder="Expliquez votre besoin, vos objectifs, vos délais..."></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+      </form>
+      <div class="contact-info">
+        <h3>Informations pratiques</h3>
+        <p>
+          Disponible pour des missions récurrentes ou ponctuelles, avec un volume d’environ
+          <strong>10 heures par mois</strong> au départ, et possibilité d’ajuster en fonction des besoins.
+        </p>
+        <p>
+          Travail en télétravail, environnement technique stable (double écran, onduleur, PC de secours) et
+          utilisation d’outils collaboratifs si nécessaire.
+        </p>
+        <p>
+          Vous pouvez aussi me contacter directement et nous organiserons un premier échange pour cadrer la collaboration.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Taratra ANDRIAMANAMIHANTA — SEO local, WordPress / Elementor, rédaction web SEO.</p>
+  </footer>
+
+  <script>
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>
