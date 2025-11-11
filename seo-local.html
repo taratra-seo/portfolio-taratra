@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+<title>SEO Local – Taratra ANDRIAMANAMIHANTA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio de Taratra ANDRIAMANAMIHANTA, spécialiste SEO local, expert WordPress / Elementor et rédacteur web SEO. Création de sites, optimisation locale et contenus orientés conversion." />
+  <link rel="stylesheet" href="styles/style.css" />
+<script>
+// VFS Asset Interceptor - Auto-injected by OSW Studio
+(function() {
+  const vfsBlobUrls = {"/data.json":"blob:https://otst-osw-studio.hf.space/c48aafcf-43f9-4e27-a135-90380ee2d9f4","/assets/bureau-taratra.jpg":"blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44","/assets/qr-linkedin-taratra.png":"blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b","/scripts/main.js":"blob:https://otst-osw-studio.hf.space/f798ee11-e58c-432c-8797-a46af5fb1543","/index.html":"blob:https://otst-osw-studio.hf.space/f18c23ac-35f3-4af3-a404-df539c868b32"};
+  
+  // Helper function to resolve VFS paths to blob URLs
+  function resolveVfsUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/assets/') && vfsBlobUrls[url]) {
+      return vfsBlobUrls[url];
+    }
+    return url;
+  }
+  
+  // Intercept Image src setter to handle ALL image loading
+  const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    get: function() {
+      return originalSrcDescriptor.get.call(this);
+    },
+    set: function(value) {
+      const resolvedUrl = resolveVfsUrl(value);
+      return originalSrcDescriptor.set.call(this, resolvedUrl);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept setAttribute for src attributes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && this instanceof HTMLImageElement) {
+      value = resolveVfsUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept innerHTML to catch template-generated images
+  const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      return originalInnerHTMLDescriptor.get.call(this);
+    },
+    set: function(value) {
+      if (typeof value === 'string' && value.includes('/assets/')) {
+        // Replace asset URLs in the HTML string before setting
+        const srcRegex = new RegExp('src=["\']([^"\']*/assets/[^"\']*)["\']', 'g');
+        value = value.replace(srcRegex, function(match, url) {
+          const resolvedUrl = resolveVfsUrl(url);
+          if (resolvedUrl !== url) {
+            return match.replace(url, resolvedUrl);
+          }
+          return match;
+        });
+      }
+      return originalInnerHTMLDescriptor.set.call(this, value);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept Image constructor
+  const OriginalImage = window.Image;
+  window.Image = function(...args) {
+    const img = new OriginalImage(...args);
+    // Override src setter for this instance too
+    const descriptor = Object.getOwnPropertyDescriptor(img, 'src') || 
+                      Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (descriptor) {
+      Object.defineProperty(img, 'src', {
+        get: descriptor.get,
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return img;
+  };
+  // Preserve original Image properties
+  Object.setPrototypeOf(window.Image, OriginalImage);
+  window.Image.prototype = OriginalImage.prototype;
+  
+  // Intercept createElement for img elements
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName, options) {
+    const element = originalCreateElement.call(this, tagName, options);
+    if (tagName.toLowerCase() === 'img') {
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      Object.defineProperty(element, 'src', {
+        get: function() {
+          return originalSrcDescriptor.get.call(this);
+        },
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return element;
+  };
+  
+  // Intercept fetch requests to VFS assets
+  const originalFetch = window.fetch;
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : input.url;
+    const resolvedUrl = resolveVfsUrl(url);
+    
+    if (resolvedUrl !== url) {
+      return originalFetch(resolvedUrl, init);
+    }
+    
+    return originalFetch(input, init);
+  };
+  
+  // Intercept XMLHttpRequest for older code
+  const OriginalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = function() {
+    const xhr = new OriginalXHR();
+    const originalOpen = xhr.open;
+    
+    xhr.open = function(method, url, ...args) {
+      const resolvedUrl = resolveVfsUrl(url);
+      return originalOpen.call(this, method, resolvedUrl, ...args);
+    };
+    
+    return xhr;
+  };
+  
+  // Process any existing images in the DOM when ready
+  function processExistingImages() {
+    const images = document.querySelectorAll('img[src*="/assets/"]');
+    images.forEach(img => {
+      const currentSrc = img.src;
+      const resolvedSrc = resolveVfsUrl(currentSrc);
+      if (resolvedSrc !== currentSrc) {
+        img.src = resolvedSrc;
+      }
+    });
+  }
+  
+  // Use MutationObserver to catch dynamically added images
+  function setupMutationObserver() {
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              if (node.tagName === 'IMG' && node.src && node.src.includes('/assets/')) {
+                const resolvedSrc = resolveVfsUrl(node.src);
+                if (resolvedSrc !== node.src) {
+                  node.src = resolvedSrc;
+                }
+              }
+              // Also check children
+              const childImages = node.querySelectorAll && node.querySelectorAll('img[src*="/assets/"]');
+              if (childImages) {
+                childImages.forEach(img => {
+                  const resolvedSrc = resolveVfsUrl(img.src);
+                  if (resolvedSrc !== img.src) {
+                    img.src = resolvedSrc;
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+  
+  // Setup everything when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      processExistingImages();
+      setupMutationObserver();
+    });
+  } else {
+    processExistingImages();
+    setupMutationObserver();
+  }
+})();
+</script>
+</head>
+<body>
+  <header class="site-header">
+   <nav class="navbar">
+  <div class="logo">
+    <span class="logo-mark">T.S</span>
+    <span class="logo-text">TaraAI<span class="accent">·SEO</span></span>
+  </div>
+ <ul class="nav-links">
+  <li><a href="index.html">Accueil</a></li>
+  <li><a href="services.html">Services</a></li>
+  <li><a href="seo-local.html">SEO Local</a></li>
+  <li><a href="projets.html">Projets</a></li>
+  <li><a href="process.html">Process</a></li>
+  <li><a href="apropos.html">À propos</a></li>
+  <li><a href="faq.html">FAQ</a></li>
+  <li><a href="environnement.html">Environnement</a></li>
+  <li><a href="index.html#contact" class="btn-nav">Contact</a></li>
+</ul>
+ </nav>
+  </header>
+<main>
+  <section class="section section-compact">
+    <div class="section-header">
+      <p class="hero-eyebrow">SEO local</p>
+      <h1>Structurer vos pages locales pour être trouvé près de chez vous</h1>
+      <p>
+        Ici, je présente ma façon de travailler sur le <strong>SEO local on-page</strong> :
+        pages services, pages villes, maillage interne de base et contenus lisibles
+        pour les utilisateurs comme pour Google.
+      </p>
+    </div>
+  </section>
+
+ 
+   <!-- SEO LOCAL -->
+  <section id="seo-local" class="section section-alt">
+    <div class="section-header">
+      <h2>SEO local : être trouvé au bon endroit, au bon moment</h2>
+      <p>
+        Le <strong>SEO local</strong> permet à vos clients de vous trouver lorsqu’ils recherchent un service “près de chez eux”.
+J’aide à structurer des pages services et des pages locales par ville ou par zone d’intervention, avec un contenu cohérent, pour transformer des recherches en demandes de devis.
+      </p>
+    </div>
+
+    <div class="seo-grid">
+      <div class="seo-text">
+        <p>
+          Mon travail commence par un rapide état des lieux : pages existantes, fiches locales, cohérence des informations.
+          Ensuite, je propose une structure simple avec des pages par ville, des sections optimisées et des contenus clairs.
+        </p>
+        <p>
+          J’utilise l’IA comme accélérateur pour générer des bases de textes, puis je les réécris entièrement pour respecter le ton de l’entreprise, le niveau de langue et les consignes du client.
+          Le résultat : des contenus locaux lisibles, structurés et faciles à maintenir.
+        </p>
+        <p>
+          L’objectif n’est pas de promettre des miracles, mais de mettre en place les bons fondamentaux :
+          fiches complètes, pages bien hiérarchisées, maillage interne simple et appels à l’action visibles.
+        </p>
+      </div>
+      <div class="before-after">
+        <div class="ba-card">
+          <h3>Avant</h3>
+          <ul>
+            <li>Informations locales dispersées, aucune page dédiée par ville.</li>
+<li>Pages services très générales, sans précision sur les zones couvertes.</li>
+<li>Aucun appel à l’action clair pour la prise de contact.</li>
+
+          </ul>
+        </div>
+        <div class="ba-card ba-card-after">
+          <h3>Après</h3>
+          <ul>
+            <li>Informations cohérentes sur la fiche et le site.</li>
+            <li>Pages ville structurées avec sections lisibles.</li>
+            <li>Formulaires et boutons de contact visibles et répétés.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+    <!-- CONTACT -->
+  <section id="contact" class="section contact-section">
+    <div class="section-header">
+      <h2>Travaillons ensemble</h2>
+      <p>
+        Vous cherchez un <strong>spécialiste SEO local</strong>, un <strong>expert WordPress / Elementor</strong> et un <strong>rédacteur web SEO</strong>
+        capable de suivre vos process et de livrer des pages prêtes à publier&nbsp;? Décrivez votre besoin en quelques lignes.
+      </p>
+    </div>
+    <div class="contact-grid">
+      <form class="contact-form">
+        <label>
+          Nom complet
+          <input type="text" name="name" placeholder="Votre nom" />
+        </label>
+        <label>
+          Adresse e-mail
+          <input type="email" name="email" placeholder="vous@example.com" />
+        </label>
+        <label>
+          Type de projet
+          <input type="text" name="project" placeholder="Site vitrine, pages locales, landing page..." />
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="5" placeholder="Expliquez votre besoin, vos objectifs, vos délais..."></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+      </form>
+     
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Taratra ANDRIAMANAMIHANTA — SEO local, WordPress / Elementor, rédaction web SEO.</p>
+  </footer>
+
+  <script>
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>

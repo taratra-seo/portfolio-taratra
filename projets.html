@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+ <title>Projets – Portfolio de Taratra ANDRIAMANAMIHANTA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio de Taratra ANDRIAMANAMIHANTA, spécialiste SEO local, expert WordPress / Elementor et rédacteur web SEO. Création de sites, optimisation locale et contenus orientés conversion." />
+  <link rel="stylesheet" href="styles/style.css" />
+<script>
+// VFS Asset Interceptor - Auto-injected by OSW Studio
+(function() {
+  const vfsBlobUrls = {"/data.json":"blob:https://otst-osw-studio.hf.space/c48aafcf-43f9-4e27-a135-90380ee2d9f4","/assets/bureau-taratra.jpg":"blob:https://otst-osw-studio.hf.space/81e2c846-edb9-4696-a404-41881096de44","/assets/qr-linkedin-taratra.png":"blob:https://otst-osw-studio.hf.space/6aeb465a-cd0b-40c1-bedc-7eb8b30d6b1b","/scripts/main.js":"blob:https://otst-osw-studio.hf.space/f798ee11-e58c-432c-8797-a46af5fb1543","/index.html":"blob:https://otst-osw-studio.hf.space/f18c23ac-35f3-4af3-a404-df539c868b32","/seo-local.html":"blob:https://otst-osw-studio.hf.space/207ff5a8-44dc-48b8-bfd5-548283863bb6","/services.html":"blob:https://otst-osw-studio.hf.space/c6b19c9b-957e-4be7-8f38-a8f0d3a3c72e","/faq.html":"blob:https://otst-osw-studio.hf.space/f3b6b511-f81c-4821-9022-304ffb4f3cee","/apropos.html":"blob:https://otst-osw-studio.hf.space/a7f3cc91-8159-47e9-b016-956a3677fe02","/process.html":"blob:https://otst-osw-studio.hf.space/3e6713a5-de44-4745-a81b-201c6ba81d89"};
+  
+  // Helper function to resolve VFS paths to blob URLs
+  function resolveVfsUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/assets/') && vfsBlobUrls[url]) {
+      return vfsBlobUrls[url];
+    }
+    return url;
+  }
+  
+  // Intercept Image src setter to handle ALL image loading
+  const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    get: function() {
+      return originalSrcDescriptor.get.call(this);
+    },
+    set: function(value) {
+      const resolvedUrl = resolveVfsUrl(value);
+      return originalSrcDescriptor.set.call(this, resolvedUrl);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept setAttribute for src attributes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && this instanceof HTMLImageElement) {
+      value = resolveVfsUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept innerHTML to catch template-generated images
+  const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      return originalInnerHTMLDescriptor.get.call(this);
+    },
+    set: function(value) {
+      if (typeof value === 'string' && value.includes('/assets/')) {
+        // Replace asset URLs in the HTML string before setting
+        const srcRegex = new RegExp('src=["\']([^"\']*/assets/[^"\']*)["\']', 'g');
+        value = value.replace(srcRegex, function(match, url) {
+          const resolvedUrl = resolveVfsUrl(url);
+          if (resolvedUrl !== url) {
+            return match.replace(url, resolvedUrl);
+          }
+          return match;
+        });
+      }
+      return originalInnerHTMLDescriptor.set.call(this, value);
+    },
+    enumerable: true,
+    configurable: true
+  });
+  
+  // Intercept Image constructor
+  const OriginalImage = window.Image;
+  window.Image = function(...args) {
+    const img = new OriginalImage(...args);
+    // Override src setter for this instance too
+    const descriptor = Object.getOwnPropertyDescriptor(img, 'src') || 
+                      Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (descriptor) {
+      Object.defineProperty(img, 'src', {
+        get: descriptor.get,
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return img;
+  };
+  // Preserve original Image properties
+  Object.setPrototypeOf(window.Image, OriginalImage);
+  window.Image.prototype = OriginalImage.prototype;
+  
+  // Intercept createElement for img elements
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName, options) {
+    const element = originalCreateElement.call(this, tagName, options);
+    if (tagName.toLowerCase() === 'img') {
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      Object.defineProperty(element, 'src', {
+        get: function() {
+          return originalSrcDescriptor.get.call(this);
+        },
+        set: function(value) {
+          const resolvedUrl = resolveVfsUrl(value);
+          return originalSrcDescriptor.set.call(this, resolvedUrl);
+        },
+        enumerable: true,
+        configurable: true
+      });
+    }
+    return element;
+  };
+  
+  // Intercept fetch requests to VFS assets
+  const originalFetch = window.fetch;
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : input.url;
+    const resolvedUrl = resolveVfsUrl(url);
+    
+    if (resolvedUrl !== url) {
+      return originalFetch(resolvedUrl, init);
+    }
+    
+    return originalFetch(input, init);
+  };
+  
+  // Intercept XMLHttpRequest for older code
+  const OriginalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = function() {
+    const xhr = new OriginalXHR();
+    const originalOpen = xhr.open;
+    
+    xhr.open = function(method, url, ...args) {
+      const resolvedUrl = resolveVfsUrl(url);
+      return originalOpen.call(this, method, resolvedUrl, ...args);
+    };
+    
+    return xhr;
+  };
+  
+  // Process any existing images in the DOM when ready
+  function processExistingImages() {
+    const images = document.querySelectorAll('img[src*="/assets/"]');
+    images.forEach(img => {
+      const currentSrc = img.src;
+      const resolvedSrc = resolveVfsUrl(currentSrc);
+      if (resolvedSrc !== currentSrc) {
+        img.src = resolvedSrc;
+      }
+    });
+  }
+  
+  // Use MutationObserver to catch dynamically added images
+  function setupMutationObserver() {
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // Element node
+              if (node.tagName === 'IMG' && node.src && node.src.includes('/assets/')) {
+                const resolvedSrc = resolveVfsUrl(node.src);
+                if (resolvedSrc !== node.src) {
+                  node.src = resolvedSrc;
+                }
+              }
+              // Also check children
+              const childImages = node.querySelectorAll && node.querySelectorAll('img[src*="/assets/"]');
+              if (childImages) {
+                childImages.forEach(img => {
+                  const resolvedSrc = resolveVfsUrl(img.src);
+                  if (resolvedSrc !== img.src) {
+                    img.src = resolvedSrc;
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+  
+  // Setup everything when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      processExistingImages();
+      setupMutationObserver();
+    });
+  } else {
+    processExistingImages();
+    setupMutationObserver();
+  }
+})();
+</script>
+</head>
+<body>
+  <header class="site-header">
+   <nav class="navbar">
+  <div class="logo">
+    <span class="logo-mark">T.S</span>
+    <span class="logo-text">TaraAI<span class="accent">·SEO</span></span>
+  </div>
+ <ul class="nav-links">
+  <li><a href="index.html">Accueil</a></li>
+  <li><a href="services.html">Services</a></li>
+  <li><a href="seo-local.html">SEO Local</a></li>
+  <li><a href="projets.html">Projets</a></li>
+  <li><a href="process.html">Process</a></li>
+  <li><a href="apropos.html">À propos</a></li>
+  <li><a href="faq.html">FAQ</a></li>
+  <li><a href="environnement.html">Environnement</a></li>
+  <li><a href="index.html#contact" class="btn-nav">Contact</a></li>
+</ul>
+</nav>
+  </header>
+
+  <!-- PROJECTS -->
+ <section id="projects" class="section section-compact">
+  <div class="section-header">
+    <p class="hero-eyebrow">Portfolio WordPress & SEO local</p>
+    <h1>Projets et maquettes démonstratives</h1>
+    <p>
+      Cette page rassemble plusieurs exemples de <strong>sites vitrines</strong>, de
+      <strong>landing pages</strong> et de <strong>blogs optimisés</strong> que j’ai conçus ou structurés
+      avec <strong>WordPress / Elementor</strong> et une approche <strong>SEO local</strong>.
+      Pour certains projets, les captures sont anonymisées ou basées sur des maquettes afin de respecter
+      la confidentialité des clients tout en montrant concrètement ma façon de travailler.
+    </p>
+    <p>
+      L’objectif n’est pas d’afficher des “promesses miracles”, mais de montrer des interfaces
+      <strong>claires, lisibles et prêtes à convertir</strong>, avec une structure propre et des contenus adaptés
+      aux besoins de chaque activité.
+    </p>
+  </div>
+
+  <div class="cards-grid projects-grid">
+    <!-- tes cartes projets restent telles quelles -->
+  </div>
+</section>
+
+    <div class="cards-grid projects-grid">
+  <article class="card project-card">
+    <img src="assets/projet-artisan.png" alt="Site vitrine pour artisan local" class="project-thumb" />
+    <h3>Site vitrine – artisan local</h3>
+    <p class="card-meta">Refonte complète sous WordPress / Elementor</p>
+    <p>
+      Refonte de la page d’accueil : hero clair, présentation, services, avis, zone d’intervention et contact.
+      Structuration avec Elementor, textes réécrits pour la lisibilité et base <strong>SEO local</strong> propre.
+    </p>
+    <p class="tags">WordPress · Elementor · Pages locales · Rédaction web SEO</p>
+  </article>
+
+  <article class="card project-card">
+    <img src="assets/projet-landing.png" alt="Landing page d’offre de service" class="project-thumb" />
+    <h3>Landing page – offre de service</h3>
+    <p class="card-meta">Page d’atterrissage orientée conversion</p>
+    <p>
+      Création d’une landing page avec structure simple : bénéfices, preuves, déroulé du service, FAQ et appel à l’action.
+      Contenus générés avec l’IA puis optimisés manuellement pour coller au ton du client.
+    </p>
+    <p class="tags">Landing page · Conversion · IA · UX</p>
+  </article>
+
+  <article class="card project-card">
+    <img src="assets/projet-blog.png" alt="Blog SEO pour activité de service" class="project-thumb" />
+    <h3>Blog SEO – services</h3>
+    <p class="card-meta">Série d’articles optimisés</p>
+    <p>
+      Mise en place d’un mini plan éditorial : choix des sujets, plans d’articles, rédaction avec IA puis réécriture.
+      Objectif : créer une base de contenus cohérents pour un meilleur positionnement sur les requêtes locales.
+    </p>
+    <p class="tags">Rédaction web SEO · IA · Stratégie éditoriale</p>
+  </article>
+</div>
+    <div class="cards-grid">
+      <article class="card">
+        <h3>Site vitrine – artisan local</h3>
+        <p class="card-meta">Refonte complète sous WordPress / Elementor</p>
+        <p>
+          Refonte de la page d’accueil avec sections claires : hero, présentation, services, avis, zone d’intervention et contact.
+          Textes retravaillés avec l’IA puis relus, hiérarchie Hn nettoyée, maillage interne simplifié.
+        </p>
+        <p class="tags">WordPress · Elementor · SEO local · Rédaction</p>
+      </article>
+      <article class="card">
+        <h3>Landing page – offre de service</h3>
+        <p class="card-meta">Page d’atterrissage orientée conversion</p>
+        <p>
+          Création d’une structure unique pour une offre précise : section bénéfices, preuves sociales, déroulé du service, FAQ et call-to-action final.
+          Les contenus ont été générés avec l’IA puis optimisés manuellement pour coller à la voix du client.
+        </p>
+        <p class="tags">Landing page · Conversion · IA · UX</p>
+      </article>
+      <article class="card">
+        <h3>Blog SEO – services</h3>
+        <p class="card-meta">Série d’articles optimisés</p>
+        <p>
+          Mise en place d’un calendrier éditorial simple, recherche de sujets, plans d’articles et rédaction web SEO.
+          Les textes ont été produits avec l’IA, retravaillés et optimisés pour les lecteurs humains et non uniquement pour les robots.
+        </p>
+        <p class="tags">Rédaction web · SEO · Stratégie éditoriale</p>
+      </article>
+    </div>
+  </section>
+<section class="section">
+  <div class="section-header">
+    <h2>Besoin de ce type de résultats&nbsp;?</h2>
+    <p>
+      Si ces exemples de projets correspondent à ce que vous recherchez, vous pouvez me contacter
+      directement pour discuter de votre site, de vos pages locales ou de vos besoins en rédaction web SEO.
+    </p>
+  </div>
+  <a href="index.html#contact" class="btn btn-primary">Accéder au formulaire de contact</a>
+</section>
+
+   <footer class="site-footer">
+    <p>© <span id="year"></span> Taratra ANDRIAMANAMIHANTA — SEO local, WordPress / Elementor, rédaction web SEO.</p>
+    
+  </footer>
+
+  <script>
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>
